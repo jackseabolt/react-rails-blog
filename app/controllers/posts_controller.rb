@@ -34,7 +34,7 @@ class PostsController < ApplicationController
 
         # defines the data in the post model
         def post_params
-            params.require(:post).permit(:content, :title)
+            params.permit(:content, :title)
         end 
     
         # this doesn't work right now, but it supposedly is triggered when validation errors occur
