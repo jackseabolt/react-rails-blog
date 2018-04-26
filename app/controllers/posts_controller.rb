@@ -2,7 +2,7 @@ class PostsController < ApplicationController
     # controls error handling 
     # rescue_from ActiveRecord::RecordInvalid, with: :render_unprocessable_entity_response
     rescue_from ActiveRecord::RecordNotFound, with: :render_not_found_response
-
+    skip_before_filter :verify_authenticity_token
     def index 
         @posts = Post.all
         render json: @posts, include: 'comments', status: 200
