@@ -4,7 +4,8 @@ class PostsController < ApplicationController
     rescue_from ActiveRecord::RecordNotFound, with: :render_not_found_response
 
     # prevents csrf blocking
-    protect_from_forgery with: :null_session
+    # protect_from_forgery with: :null_session
+    skip_before_action :verify_authenticity_token
 
     def index 
         @posts = Post.all
