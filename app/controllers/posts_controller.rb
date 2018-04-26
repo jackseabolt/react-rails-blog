@@ -12,6 +12,9 @@ class PostsController < ApplicationController
         @post = Post.new(post_params)
         if @post.save
             render json: @post, status: 201
+        else 
+            render json: {status: "error", code: 400, message: "Not all required params were provided"}, status: 400
+        end
     end 
 
     def destroy 
@@ -31,9 +34,9 @@ class PostsController < ApplicationController
         end 
     
         # this doesn't work right now, but it supposedly is triggered when validation errors occur
-        def render_unprocessable_entity_response(exception)
-          render json: exception.record.errors, status: :unprocessable_entity
-        end
+        # def render_unprocessable_entity_response(exception)
+        #   render json: exception.record.errors, status: :unprocessable_entity
+        # end
     
         # this will be sent if destroy or update request is made without existing id
         def render_not_found_response(exception)
