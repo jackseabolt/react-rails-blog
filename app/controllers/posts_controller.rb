@@ -2,7 +2,10 @@ class PostsController < ApplicationController
     # controls error handling 
     # rescue_from ActiveRecord::RecordInvalid, with: :render_unprocessable_entity_response
     rescue_from ActiveRecord::RecordNotFound, with: :render_not_found_response
-    skip_before_filter :verify_authenticity_token
+
+    # prevents csrf blocking
+    protect_from_forgery with: :null_session
+
     def index 
         @posts = Post.all
         render json: @posts, include: 'comments', status: 200
@@ -30,7 +33,7 @@ class PostsController < ApplicationController
 
         # defines the data in the post model
         def post_params
-            params.permit(:content, :title)
+            params.require(:post).permit(:content, :title)
         end 
     
         # this doesn't work right now, but it supposedly is triggered when validation errors occur
