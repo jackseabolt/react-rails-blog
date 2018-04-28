@@ -1,4 +1,5 @@
 class PostsController < ApplicationController
+    
     # controls error handling 
     # rescue_from ActiveRecord::RecordInvalid, with: :render_unprocessable_entity_response
     rescue_from ActiveRecord::RecordNotFound, with: :render_not_found_response
@@ -17,16 +18,25 @@ class PostsController < ApplicationController
         if @post.save
             render json: @post, status: 201
         else 
-            render json: {status: "error", code: 400, message: "Not all required params were provided"}, status: 400
+            render json: {
+                status: 400, 
+                message: "Required params were not provided",
+            }, status: 400
         end
     end 
 
     def destroy 
         @post = Post.find(params[:id])
-        if @post.destroy 
-            respond_to do |format|
-                format.json { head :no_content }
-            end 
+        if @post.destroy  
+            render json: { 
+                status: 202,
+                message: 'Record removed',
+            }, status: 202
+        else 
+            render json: {
+                status: 400, 
+                message: "There was a problem",
+            }, status: 400
         end
     end
     
@@ -37,11 +47,6 @@ class PostsController < ApplicationController
             params.require(:post).permit(:content, :title)
         end 
     
-        # this doesn't work right now, but it supposedly is triggered when validation errors occur
-        # def render_unprocessable_entity_response(exception)
-        #   render json: exception.record.errors, status: :unprocessable_entity
-        # end
-    
         # this will be sent if destroy or update request is made without existing id
         def render_not_found_response(exception)
         render json: {
@@ -50,4 +55,8 @@ class PostsController < ApplicationController
             location: 'id'
         }, status: 422
         end
+
+        # def render_unprocessable_entity_response(exception)
+        #   render json: exception.record.errors, status: :unprocessable_entity
+        # end
 end
